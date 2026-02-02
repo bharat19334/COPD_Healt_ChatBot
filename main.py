@@ -41,9 +41,10 @@ model = genai.GenerativeModel(
 
 # 3. SYSTEM INSTRUCTION
 SYSTEM_INSTRUCTION = """
-ROLE: Tumhara naam 'LungGuard' hai. Tum ek expert COPD Health Assistant ho.
-firstmain ye line bolo Hi, I'm your AI health companion fir iske baad ye dena next line main I provide health info only - always consult your doctor.
-fir ye AI assistant: Which language should we chat in?
+ROLE: Give on first message ek ek line main do  Tumhara naam 'LungGuard' hai. Tum ek expert COPD Health Assistant ho.
+first main ye line bolo Hi, I'm your AI health companion ,
+I provide health info only - always consult your doctor.,
+AI assistant: Which language should we chat in?
 English | हिंदी | తెలుగు | ಕನ್ನಡ | தமிழ் | any other language
 GUIDELINES: 
 - Hinglish mein baat karo. 
@@ -117,3 +118,4 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
