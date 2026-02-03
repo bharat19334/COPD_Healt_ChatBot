@@ -37,7 +37,7 @@ Built as part of a project for **Technovation 2026** at **Career Point Universit
 * Twilio Account (SID & Auth Token)
 * Google Gemini API Key
 
-### Step 1: Clone the Repository
+### Clone the Repository
 ```bash
-git clone [https://github.com/bharat19334/COPD_Healt_ChatBot.git](https://github.com/bharat19334/COPD_Healt_ChatBot.git)
+git clone https://github.com/bharat19334/COPD_Healt_ChatBot.git
 cd COPD_Healt_ChatBot
