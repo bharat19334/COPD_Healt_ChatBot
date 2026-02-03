@@ -34,7 +34,7 @@ generation_config = genai.types.GenerationConfig(
 
 # NOTE: Hum 'gemini-1.5-flash' use kar rahe hain kyunki ye '2.0' se zyada stable hai
 model = genai.GenerativeModel(
-    'gemini-1.5-flash', 
+    'gemini-flash-latest', 
     safety_settings=safety_settings,
     generation_config=generation_config
 )
@@ -118,5 +118,6 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 
