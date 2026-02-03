@@ -39,5 +39,5 @@ Built as part of a project for **Technovation 2026** at **Career Point Universit
 
 ### Step 1: Clone the Repository
 ```bash
-git clone [https://github.com/your-username/copd-chatbot.git](https://github.com/your-username/copd-chatbot.git)
-cd copd-chatbot
+git clone [https://github.com/bharat19334/COPD_Healt_ChatBot.git](https://github.com/bharat19334/COPD_Healt_ChatBot.git)
+cd COPD_Healt_ChatBot
