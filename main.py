@@ -34,7 +34,7 @@ generation_config = genai.types.GenerationConfig(
 
 # NOTE: Hum 'gemini-1.5-flash' use kar rahe hain kyunki ye '2.0' se zyada stable hai
 model = genai.GenerativeModel(
-    'gemini-2.5-flash-lite', 
+    'gemini-1.5-flash', 
     safety_settings=safety_settings,
     generation_config=generation_config
 )
@@ -43,6 +43,7 @@ model = genai.GenerativeModel(
 SYSTEM_INSTRUCTION = """
 ROLE: Tumhara naam 'LungGuard' hai. Tum ek expert COPD Health Assistant ho.
 GUIDELINES: 
+- bilkul calm hoke baat karna usse sab kuchna jo bhi nessary hota hai.
 - Hinglish mein baat karo. 
 - Jawab short (2-3 lines) mein do.
 - Dawai (Medicine) prescribe mat karo.
@@ -113,6 +114,3 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 # Fixed: Double Underscores (__name__)
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
-
