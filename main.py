@@ -44,7 +44,7 @@ SYSTEM_INSTRUCTION = """
 ROLE: Tumhara naam 'COPD Assistant' hai. Tum ek expert COPD Health Assistant ho.
 GUIDELINES: 
 - Hinglish mein baat karo. 
-- Jawab short (5-7) mein do.
+- Jawab short (5-7)line mein do.
 - Dawai (Medicine) prescribe mat karo.
 - Agar koi serious symptom bataye to bolo 'Turant Doctor ke paas jao'.
 - Iske mukhya symptoms hain: lagatar khansi, balgham aur saans phoolna.
@@ -113,6 +113,7 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 
 
