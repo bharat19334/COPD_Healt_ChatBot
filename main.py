@@ -1,40 +1,81 @@
 import os
+import google.generativeai as genai
 from fastapi import FastAPI, Form, Response
 from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
 import uvicorn
-from groq import Groq  # Google ki jagah Groq import kiya
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
 # 1. SETUP
 load_dotenv()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
 
-if not GROQ_API_KEY:
-    print("❌ Error: GROQ API Key nahi mili! .env file check karein.")
+if not GOOGLE_API_KEY:
+    print("❌ Error: API Key nahi mili! .env file check karein.")
 else:
-    print("✅ Groq API Key loaded successfully.")
+    print("✅ API Key loaded successfully.")
 
-# 2. CLIENT CONFIGURATION
-client = Groq(api_key=GROQ_API_KEY)
+# 2. AI CONFIGURATION (Stable & Safe)
+genai.configure(api_key=GOOGLE_API_KEY)
 
-# 3. SYSTEM INSTRUCTION (Same as before)
+# Safety Settings: Taaki AI 'Medical Advice' ke naam par dar kar block na kare
+safety_settings = {
+    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+}
+
+# Configuration: Jawab fast aaye taaki WhatsApp timeout na ho
+generation_config = genai.types.GenerationConfig(
+    max_output_tokens=200, 
+    temperature=0.7
+)
+
+# NOTE: Hum 'gemini-1.5-flash' use kar rahe hain kyunki ye '2.0' se zyada stable hai
+model = genai.GenerativeModel(
+    'gemini-2.5-flash', 
+    safety_settings=safety_settings,
+    generation_config=generation_config
+)
+
+# 3. SYSTEM INSTRUCTION
 SYSTEM_INSTRUCTION = """
 ROLE: Tumhara naam 'COPD Assistant' hai. Tum ek expert COPD Health Assistant ho.
 GUIDELINES: 
 - Hinglish mein baat karo. 
-- Jawab short (5-7) line mein do.
+- Jawab short (5-7)line mein do.
 - Dawai (Medicine) prescribe mat karo.
 - Agar koi serious symptom bataye to bolo 'Turant Doctor ke paas jao'.
 - Iske mukhya symptoms hain: lagatar khansi, balgham aur saans phoolna.
-- "COPD aapki life ka sirf ek hissa hai, poori kahani nahi. Hamesha yaad rakhna - aap COPD se bade hain, chhote nahi."
-- Agar koi copd se related nhi ho toh usse bolo ki ye copd se related nhi hai.
+- Sabse bada risk factor smoking hai, lekin pollution se bhi ho sakta hai.
+- Smoking band karna sabse important step hai.agar aapko shaas lene main takleef aati ho toh.
+- Healthy khana khaayein aur paani bharpur piyein.
+- Saans phoolne par calmly baith jaayein, pursed-lip breathing try karein.
+- COPD ke liye spirometry test confirm karta hai.
+- Dawaai kabhi bhi aapne aap band nahi karni hai.
+- Yaad rakhein, main ek chatbot hoon, doctor nahi.
+- Khana khate samay saans phoole toh chhote bites lein, aaraam se.
+- Oxygen therapy ki zaroorat padh sakti hai, doctor se baat karein.
+- Sleeping position: head up rakhke sone se saans lena aasan ho jaata hai.
+- Cooking karte waqt chimney ON rakhein taaki smoke na phoonke.
+- Yoga ke breathing exercises (pranayama) doctor ki advice se shuru karein.
+- Agar weight kam ho raha hai toh protein-rich diet lein.
+- Saans phoolne par ghabrayein nahi, slow-breathing exercises karein.
+- Naye symptoms aayein (jaise pairon mein swelling) toh doctor ko zaroor batayein.
+- COPD ke patients ko GERD (acid reflux) bhi ho sakta hai, chhote meals lein aur sone se 2-3 ghante pehle khana kha lein.
+- Agar aapko neend mein saans phoolti hai ya aap thakaan mehsoos karte hain, sleep apnea ho sakta hai, doctor ko batayein.
+- "COPD aapki life ka sirf ek hissa hai, poori kahani nahi. Hamesha yaad rakhna - aap COPD se bade hain, chhote nahi. Thodi si samajhdaari, thoda sa dhyan, aur apne aap par vishwaas...
+Yahi teen cheezein aapko iske saath bhi khushhaal jeene ki taakat dengi.
+- Take care, stay strong, and keep breathing easy! 🙏💙
+- ~ Aapka COPD Support Friend"
+- agar koi copd se related nhi ho toh usse bolo ki ye copd se related nhi hai and main copd healt hi assist karta hu.
 """
 
-# Global Chat History (Simple List)
-# Isme hum system instruction pehle hi daal dete hain
-chat_history = [
-    {"role": "system", "content": SYSTEM_INSTRUCTION}
-]
+chat_session = model.start_chat(history=[
+    {"role": "user", "parts": "System Instruction: " + SYSTEM_INSTRUCTION},
+    {"role": "model", "parts": "Ok, main LungGuard hu."}
+])
 
 # 4. SERVER SETUP
 app = FastAPI()
@@ -46,41 +87,30 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 
     print(f"📩 Message from {sender_number}: {user_message}")
 
-    # --- MEMORY MANAGEMENT (CRITICAL FIX) ---
-    # 1. User ka message history mein add karo
-    chat_history.append({"role": "user", "content": user_message})
-
-    # 2. ROLLING WINDOW: Agar history 12 messages se badi ho gayi, toh purane delete karo
-    # Hum index 1 se delete karenge taaki 'System Instruction' (index 0) hamesha rahe.
-    if len(chat_history) > 12:
-        # Syntax: [System Instruction] + [Last 10 messages]
-        # Ye purani baatein bhula dega taaki bot hang na ho
-        chat_history[:] = [chat_history[0]] + chat_history[-10:]
-
     try:
-        # --- GROQ API CALL ---
-        chat_completion = client.chat.completions.create(
-            messages=chat_history,
-            model="llama-3.3-70b-versatile",  # High quality & Fast model
-            temperature=0.7,
-            max_tokens=200,
-        )
-
-        ai_reply_text = chat_completion.choices[0].message.content
+        # AI se pucho
+        response = chat_session.send_message(user_message)
+        
+        # CRASH PROTECTION: Check karo jawab aaya ya nahi
+        if response.parts:
+            ai_reply_text = response.text
+        else:
+            # Agar AI ne block kiya ya khali jawab diya
+            ai_reply_text = "Maaf karein, main iska jawab nahi de sakta (Safety Policy)."
+            
         print(f"🤖 AI Reply: {ai_reply_text}")
-
-        # AI ka jawab bhi history mein add karo taaki context bana rahe
-        chat_history.append({"role": "assistant", "content": ai_reply_text})
 
     except Exception as e:
         print(f"❌ Error: {e}")
         ai_reply_text = "Server abhi busy hai. Kripya thodi der baad try karein."
 
-    # Twilio Response
+    # Twilio Response Container
     twilio_resp = MessagingResponse()
     twilio_resp.message(ai_reply_text)
 
+    # ✨ XML Format Return (Zaroori hai)
     return Response(content=str(twilio_resp), media_type="application/xml")
 
+# Fixed: Double Underscores (__name__)
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
