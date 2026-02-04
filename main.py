@@ -69,6 +69,7 @@ GUIDELINES:
 Yahi teen cheezein aapko iske saath bhi khushhaal jeene ki taakat dengi.
 - Take care, stay strong, and keep breathing easy! 🙏💙
 - ~ Aapka COPD Support Friend"
+- agar koi copd se related nhi ho toh usse bolo ki ye copd se related nhi hai and main copd healt hi assist karta hu.
 """
 chat_session = model.start_chat(history=[
     {"role": "user", "parts": "System Instruction: " + SYSTEM_INSTRUCTION},
@@ -113,6 +114,7 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 
 
