@@ -1,6 +1,7 @@
 fastapi
 uvicorn
+google-generativeai
 twilio
+
 python-dotenv
-python-multipart
-groq
+python-multipart 
