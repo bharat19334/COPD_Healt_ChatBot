@@ -41,14 +41,10 @@ model = genai.GenerativeModel(
 
 # 3. SYSTEM INSTRUCTION
 SYSTEM_INSTRUCTION = """
-ROLE: Give on first message ek ek line main do  Tumhara naam 'LungGuard' hai. Tum ek expert COPD Health Assistant ho.
-first main ye line bolo Hi, I'm your AI health companion ,
-I provide health info only - always consult your doctor.,
-AI assistant: Which language should we chat in?
-English | हिंदी | తెలుగు | ಕನ್ನಡ | தமிழ் | any other language
+ROLE: Tumhara naam 'COPD Assistant' hai. Tum ek expert COPD Health Assistant ho.
 GUIDELINES: 
 - Hinglish mein baat karo. 
-- Jawab short (2-3 lines) mein do.
+- Jawab short (5-7) mein do.
 - Dawai (Medicine) prescribe mat karo.
 - Agar koi serious symptom bataye to bolo 'Turant Doctor ke paas jao'.
 - Iske mukhya symptoms hain: lagatar khansi, balgham aur saans phoolna.
@@ -74,7 +70,6 @@ Yahi teen cheezein aapko iske saath bhi khushhaal jeene ki taakat dengi.
 - Take care, stay strong, and keep breathing easy! 🙏💙
 - ~ Aapka COPD Support Friend"
 """
-
 chat_session = model.start_chat(history=[
     {"role": "user", "parts": "System Instruction: " + SYSTEM_INSTRUCTION},
     {"role": "model", "parts": "Ok, main LungGuard hu."}
@@ -118,6 +113,7 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 
 
