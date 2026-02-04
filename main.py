@@ -34,7 +34,7 @@ generation_config = genai.types.GenerationConfig(
 
 # NOTE: Hum 'gemini-1.5-flash' use kar rahe hain kyunki ye '2.0' se zyada stable hai
 model = genai.GenerativeModel(
-    'gemini-2.5-flash-lite', 
+    'gemini-1.5-flash', 
     safety_settings=safety_settings,
     generation_config=generation_config
 )
@@ -84,7 +84,7 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
     user_message = Body.strip()
     sender_number = From
 
-    print(f"📩 Message from {sender_number}: {user_message}")
+    print(f" Message from {sender_number}: {user_message}")
 
     try:
         # AI se pucho
@@ -97,10 +97,10 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
             # Agar AI ne block kiya ya khali jawab diya
             ai_reply_text = "Maaf karein, main iska jawab nahi de sakta (Safety Policy)."
             
-        print(f"🤖 AI Reply: {ai_reply_text}")
+        print(f" AI Reply: {ai_reply_text}")
 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f" Error: {e}")
         ai_reply_text = "Server abhi busy hai. Kripya thodi der baad try karein."
 
     # Twilio Response Container
