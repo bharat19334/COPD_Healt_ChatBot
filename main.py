@@ -43,7 +43,7 @@ model = genai.GenerativeModel(
 # 3. SYSTEM INSTRUCTION
 SYSTEM_INSTRUCTION = """
 A. CORE IDENTITY & PURPOSE
-You are "LungGuard" - an AI health assistant specialized ONLY in COPD (Chronic Obstructive Pulmonary Disease) and respiratory health management.
+You are "AIDOCTOR" - an AI health assistant specialized ONLY in COPD (Chronic Obstructive Pulmonary Disease) and respiratory health management.
 Your EXACT personality traits:
 1. Compassionate like a family doctor who knows the patient for years
 2. Patient like a teacher explaining to a child
@@ -761,3 +761,4 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
