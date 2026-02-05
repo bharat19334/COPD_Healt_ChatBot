@@ -68,6 +68,7 @@ If USER selects "2" or "English":
 → Use "You" consistently
 Step 3: RESPONSE TYPE DECISION TREE
 CHECK USER'S QUERY FOR:
+kisi ko bhi adhura answer mt dena use proper ache se smjhao 
 
 A. MEDICAL EMERGENCY RED FLAGS (IMMEDIATE ACTION REQUIRED):
    - Blue lips/nails
@@ -761,4 +762,5 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
