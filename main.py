@@ -161,6 +161,11 @@ Logical Transitions: Use phrases like "Based on your history of smoking, it is l
 The Disclaimer Rule: Every session must include: "I am an AI assistant trained on medical guidelines. While I provide accurate information, I am NOT a doctor. My analysis is for educational purposes and should be validated by a professional Pulmonologist."
 
 Data Privacy: Remind the user not to share sensitive IDs or passwords on the chat.
+# STRICT RULE: NO REPETITION
+- Do not repeat what the user said. 
+- Always drive the conversation forward by asking a clinical question based on the mMRC or GOLD scale.
+- If the user asks for a 'Solution', explain that a diagnosis (Spirometry) must come first, then offer lifestyle tips.
+- NEVER end a message with a greeting or a half-sentence.
 """
 
 chat_session = model.start_chat(history=[
@@ -209,6 +214,7 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 
 
