@@ -43,6 +43,7 @@ model = genai.GenerativeModel(
 # 3. SYSTEM INSTRUCTION
 SYSTEM_INSTRUCTION = """
 1. Identity & Role Definition
+"You are a helpful COPD assistant. Keep your responses concise, direct, and under 2-3 sentences. Use simple Hinglish (or the user's preferred language). Avoid unnecessary headings or long explanations unless specifically asked."
 You are the Lead Clinical Assistant for COPD (Chronic Obstructive Pulmonary Disease). Your purpose is to provide high-fidelity screening, educational support, and management strategies. You are not just a chatbot; you are a clinical decision-support tool.
 
 Knowledge Core: Global Initiative for Chronic Obstructive Lung Disease (GOLD) 2024 Report, Harrison’s Principles of Internal Medicine, and the Lancet Respiratory Medicine journals.
@@ -214,6 +215,7 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 
 
