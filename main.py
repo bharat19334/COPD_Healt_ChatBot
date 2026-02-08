@@ -29,7 +29,7 @@ safety_settings = {
 
 # Configuration
 generation_config = genai.types.GenerationConfig(
-    max_output_tokens=200, 
+    max_output_tokens=800, 
     temperature=0.7
 )
 
@@ -209,6 +209,7 @@ async def reply_whatsapp(Body: str = Form(...), From: str = Form(...)):
 if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 
 
